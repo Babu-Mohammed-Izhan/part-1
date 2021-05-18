@@ -1,45 +1,43 @@
 import React, { useState } from 'react'
-import Statistic from './Statistic'
-import Button from './Button';
-
-
-const Statistics = (props) => {
-  return (
-    <div>
-      <h1>statistics</h1>
-      <table>
-        <tbody>
-          <Statistic text="good" value={props.good} />
-          <Statistic text="neutral" value={props.neutral} />
-          <Statistic text="bad" value={props.bad} />
-          <Statistic text="all" value={props.all} />
-          <Statistic text="average" value={props.average} />
-          <Statistic text="positive" value={props.positive} />
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  var all = good + neutral + bad
-  var average = (good * 1 + neutral * 0 + bad * -1) / 3
-  var positive = good / all
+  const anecdotes = [
+    'If it hurts, do it more often',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+  ]
 
+  const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(new Array(6).fill(0))
+  const [mostVotes, setmostVotes] = useState(0)
+  const handleVotes = () => {
+    const copy = [...points]
+    copy[selected] += 1
+    setPoints(copy)
+  }
+  const handleMostVotes = () => {
+    const copy = [...points]
+    const largest = copy.indexOf(Math.max.apply(Math, copy))
+    setmostVotes(largest)
+  }
   return (
     <div>
-      <h1>Give Feedback</h1>
-      <Button name={"good"} handleClick={() => setGood(good + 1)} />
-      <Button name={"neutral"} handleClick={() => setNeutral(neutral + 1)} />
-      <Button name={"bad"} handleClick={() => setBad(bad + 1)} />
-      {(good === 0 && neutral === 0 && bad === 0) ? <h3>No feedback given</h3> :
-        <Statistics good={good} bad={bad} neutral={neutral} all={all} average={average} positive={positive} />
-      }
+      <h1>Anecdote of the day</h1>
+      <h3>{anecdotes[selected]} has {points[selected]} votes</h3>
+      <div>
+        <button onClick={() => {
+          handleVotes()
+          handleMostVotes()
+        }}>vote</button>
+        <button onClick={() => { setSelected(Math.floor(Math.random() * 6)) }}>next anecdote</button>
+        <div>
+          <h1>Anecdote with the most views</h1>
+          <h3>{anecdotes[mostVotes]} has {points[mostVotes]} votes</h3>
+        </div>
+      </div>
     </div>
   )
 }
